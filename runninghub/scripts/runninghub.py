@@ -605,11 +605,7 @@ def cmd_execute(args):
     if not result_url:
         text_result = result_item.get("text") or result_item.get("content") or result_item.get("output")
         if text_result:
-            print(json.dumps({
-                "status": "success",
-                "type": "text",
-                "content": text_result,
-            }, ensure_ascii=False))
+            print(text_result)
             return
         print(json.dumps({"error": "TASK_FAILED", "message": "No URL or text in results"}))
         sys.exit(1)
@@ -624,15 +620,9 @@ def cmd_execute(args):
 
     print(f"Downloading result to local file...", file=sys.stderr)
     full_path = download_file(result_url, output_path)
-    print(json.dumps({
-        "status": "success",
-        "type": endpoint_def["output_type"],
-        "file": full_path,
-        "endpoint": endpoint_def["endpoint"],
-        "instruction": f"Send the LOCAL file '{full_path}' as a media attachment to the user. "
-                       "Do NOT use markdown image syntax. Do NOT show any URL. "
-                       "Just reference this local file path for the system to send.",
-    }, ensure_ascii=False))
+    # OpenClaw parses MEDIA: tokens and will attach the file on
+    # supported chat providers (WhatsApp, Telegram, WebChat, etc.).
+    print(f"MEDIA:{full_path}")
 
 
 def _guess_ext(output_type: str) -> str:

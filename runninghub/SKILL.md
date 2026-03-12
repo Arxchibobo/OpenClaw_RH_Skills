@@ -24,8 +24,8 @@ Data: `{baseDir}/data/capabilities.json`
 
 1. **ALWAYS use the script** — never call RunningHub API directly via curl.
 2. **ALWAYS use `-o /tmp/rh-output/filename.ext`** — the script downloads the result file locally.
-3. **Send the local file, not a URL** — parse the JSON output, get the `file` path, and include that local file path in your response so the system sends it as a media attachment. NEVER use markdown image syntax `![](...)`.
-4. **NEVER show RunningHub URLs** — ALL RunningHub URLs (`https://www.runninghub.cn/api/image/...`, `/task/...`, etc.) are INTERNAL and require API authentication. Users CANNOT open them. You MUST NOT include them in your response in any form.
+3. **The script prints `MEDIA:` lines** — OpenClaw auto-attaches the file on supported chat providers (WhatsApp, Telegram, WebChat, etc.). Do not read the image back; report the saved path only.
+4. **NEVER show RunningHub URLs** — ALL RunningHub URLs (`https://www.runninghub.cn/api/image/...`, `/task/...`, etc.) are INTERNAL and require API authentication. Users CANNOT open them. Do NOT include them in your response.
 5. **ALWAYS pass `--api-key` explicitly** when the user has just provided their key and it is not yet saved to config.
 
 ## API key setup flow
@@ -87,9 +87,10 @@ Do NOT attempt any generation until `--check` returns `"ready"` with balance > 0
 
 - When user asks to generate/edit media, run immediately using the script.
 - ALWAYS include `-o /tmp/rh-output/<descriptive-name>.<ext>` to save the result locally.
+- Use timestamps in filenames: `yyyy-mm-dd-hh-mm-ss-name.ext`.
 - Do not pass placeholder values like `your_api_key_here`.
 - If the script returns an error JSON, react based on the `error` field (see Error Handling below).
-- After the script completes, parse the JSON output from stdout. The `file` field contains the local path to send to the user.
+- The script prints a `MEDIA:` line — OpenClaw auto-attaches the file. Do not read the image back; report the saved path only.
 
 ## Quick Routing Table
 
@@ -292,43 +293,26 @@ The script outputs structured JSON errors. React based on the `error` field:
 
 ## Output handling
 
-The script prints a single JSON line to stdout. Parse it and act accordingly.
+### Media results (image/video/audio/3D)
 
-### Success — media file (image/video/audio/3D)
-```json
-{"status": "success", "type": "image", "file": "/tmp/rh-output/puppy.png", "endpoint": "...", "instruction": "..."}
+The script prints a `MEDIA:` line for OpenClaw to auto-attach on supported chat providers:
+```
+MEDIA:/tmp/rh-output/puppy.png
 ```
 
-**How to present the result to the user:**
+OpenClaw automatically parses this, loads the file, and sends it as a media attachment (image, video, or audio) to the user on WhatsApp, Telegram, WebChat, etc.
 
-CORRECT — reference the local file path so the system sends it as a media attachment:
-```
-Here's your generated image!
+**Do not read the image back; report the saved path only.** Just confirm to the user what was generated. Example response:
 
-/tmp/rh-output/puppy.png
-```
-The file path on its own line tells the system to send it as a media attachment.
+> Here's your puppy image, generated with 全能图片PRO at 2K resolution.
 
-WRONG — do NOT do any of these:
-```
-![小狗](https://www.runninghub.cn/api/image/xxx/output.png)   ← BROKEN: internal URL, user cannot open
-![小狗](/tmp/rh-output/puppy.png)                              ← WRONG: markdown image syntax not supported
-Here's your image: https://www.runninghub.cn/api/image/xxx     ← BROKEN: internal URL requires auth
-```
+### Text results (understanding endpoints)
 
-**Why RunningHub URLs don't work:** All result URLs like `https://www.runninghub.cn/api/image/{taskId}/output.png` are INTERNAL and require API key authentication. Users CANNOT open them in a browser. The script already downloads the file locally — use that local file.
+The script prints the text content directly. Relay it to the user.
 
-### Success — text result
-```json
-{"status": "success", "type": "text", "content": "A photo of a golden retriever..."}
-```
-Relay the `content` to the user as text.
+### Errors
 
-### Error
-```json
-{"error": "TASK_FAILED", "message": "..."}
-```
-See the Error Handling table above for how to react to each error code.
+The script prints JSON with an `error` field. See the Error Handling table above.
 
 ## Notes
 
