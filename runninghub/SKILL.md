@@ -47,6 +47,7 @@ Example tone (DO NOT follow):
 6. **ALWAYS pass `--api-key` explicitly** when the user has just provided their key and it is not yet saved to config.
 7. **NEVER show endpoint IDs to users** — say model names in Chinese (e.g. "全能视频S"), not technical endpoint strings.
 8. **ALWAYS report cost** — if the script output contains a `COST:` line, you MUST include the cost in your response (e.g. "花了 ¥0.50"). Do not omit it.
+9. **Image-to-video: ALWAYS present model choices FIRST** — When the user wants to turn an image into a video, you MUST show the 6-model selection menu (see "Interactive Model Selection" section) and WAIT for the user to choose BEFORE running any script. Do NOT auto-select a model. Do NOT skip this step. The only exceptions are listed in "When NOT to ask".
 
 ### How to deliver media (IMPORTANT)
 
@@ -226,7 +227,7 @@ Use this table to pick the best endpoint for the user's intent. Rank 1 = most po
 | Intent | Best Endpoint | Alt | Notes |
 |--------|--------------|-----|-------|
 | Text to video | `rhart-video-s/text-to-video` | `rhart-video-s/text-to-video-pro` | Sora-based, most popular |
-| Image to video | `rhart-video-s/image-to-video` | `rhart-video-s/image-to-video-pro` | Animate a still image |
+| **Image to video** | **⚠️ DO NOT auto-select** | | **MUST use Interactive Model Selection (Rule #9). Present 6 choices, wait for user to pick.** |
 | Realistic person i2v | `rhart-video-s-official/image-to-video-realistic` | | Optimized for real people |
 | Start+end frame video | `rhart-video-v3.1-pro/start-end-to-video` | `vidu/start-end-to-video-q3-pro` | Two keyframes → video |
 | Video extend | `rhart-video-v3.1-pro-official/video-extend` | `rhart-video-v3.1-fast-official/video-extend` | Extend existing video |
@@ -234,7 +235,7 @@ Use this table to pick the best endpoint for the user's intent. Rank 1 = most po
 | Reference to video | `rhart-video-v3.1-pro-official/reference-to-video` | `kling-video-o3-pro/reference-to-video` | Use reference video for style |
 | Motion control | `kling-v3.0-pro/motion-control` | `kling-v2.6-pro/motion-control` | Control motion trajectory |
 | Kling text to video | `kling-v3.0-pro/text-to-video` | `kling-video-o3-pro/text-to-video` | Kling model family |
-| Kling image to video | `kling-v3.0-pro/image-to-video` | `kling-video-o3-pro/image-to-video` | Kling model family |
+| Kling image to video | **⚠️ Use Interactive Model Selection** | | Kling i2v is choice #2 in the selection menu |
 | Vidu text to video | `vidu/text-to-video-q3-pro` | `vidu/text-to-video-q3-turbo` | Vidu model (turbo = faster) |
 | MiniMax video | `minimax/hailuo-02/t2v-pro` | `minimax/hailuo-2.3/t2v-pro` | Hailuo video models |
 | Video upscale | `topazlabs/video-upscale` | | Enhance video resolution |
@@ -299,12 +300,21 @@ python3 {baseDir}/scripts/runninghub.py \
 
 ### Image to video
 
+**⚠️ IMPORTANT**: Do NOT run image-to-video directly. You MUST first present the 6-model selection menu (see Interactive Model Selection / Rule #9) and wait for the user's choice. Then use the chosen endpoint:
+
 ```bash
+# Example: user chose 万相2.6 Flash (choice 1, default)
 python3 {baseDir}/scripts/runninghub.py \
-  --endpoint rhart-video-s/image-to-video \
+  --endpoint alibaba/wan-2.6/image-to-video-flash \
   --prompt "the puppy starts running and wagging its tail" \
   --image /tmp/openclaw/rh-output/puppy.png \
-  --param duration=10 \
+  --output /tmp/openclaw/rh-output/puppy-animated.mp4
+
+# Example: user chose 可灵 v3.0 Pro (choice 2)
+python3 {baseDir}/scripts/runninghub.py \
+  --endpoint kling-v3.0-pro/image-to-video \
+  --prompt "the puppy starts running and wagging its tail" \
+  --image /tmp/openclaw/rh-output/puppy.png \
   --output /tmp/openclaw/rh-output/puppy-animated.mp4
 ```
 
@@ -375,7 +385,7 @@ python3 {baseDir}/scripts/runninghub.py --list --task text-to-image
 Show endpoint details (parameters, options, defaults):
 
 ```bash
-python3 {baseDir}/scripts/runninghub.py --info rhart-video-s/image-to-video
+python3 {baseDir}/scripts/runninghub.py --info alibaba/wan-2.6/image-to-video-flash
 ```
 
 ## Parameter passing
