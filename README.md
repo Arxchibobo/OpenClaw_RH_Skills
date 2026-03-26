@@ -1,124 +1,191 @@
 # RHClaw — RunningHub Skill for OpenClaw
 
-[English](./README_en.md)
+[中文](./README_zh.md)
 
-为 [OpenClaw](https://github.com/openclaw/openclaw) 打造的通用多媒体生成技能，由 [RunningHub](https://www.runninghub.cn) API 驱动。
+An [OpenClaw](https://github.com/openclaw/openclaw) skill that brings multimedia generation to conversational AI, powered by the [RunningHub](https://www.runninghub.cn) API. Generate images, videos, audio, 3D models, and more through natural language — backed by **179 standard API endpoints** plus **unlimited custom ComfyUI workflows** (AI Applications).
 
-**179 个标准 API 端点 + 无限 AI 应用**，覆盖图片、视频、音频、3D 模型生成、多模态文本理解，以及任意用户创建的 AI 应用（ComfyUI 工作流）。
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](./LICENSE)
+[![Python](https://img.shields.io/badge/python-3.x-blue.svg)](https://www.python.org/)
+[![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen.svg)]()
 
-## 能力一览
+---
 
-| 类别 | 端点数 | 支持任务 |
-|------|--------|----------|
-| **图片** | 44 | 文生图、图生图、图片放大、Midjourney 风格 |
-| **视频** | 101 | 文生视频、图生视频、首尾帧生成、视频续写/编辑、运动控制 |
-| **音频** | 8 | 文字转语音、音乐生成、声音克隆 |
-| **3D** | 12 | 文字转 3D、图片转 3D、多图转 3D |
-| **文本** | 14 | 图片理解、视频理解、文本处理 |
-| **AI 应用** | 无限 | 运行任意 RunningHub AI 应用（自定义 ComfyUI 工作流） |
+## Overview
 
-## 快速开始
+RHClaw connects OpenClaw's AI assistant to RunningHub's cloud multimedia services. Once installed, users can create rich media content through natural language without managing API calls, polling logic, or file handling — the skill handles all of that automatically.
 
-### 安装
+It supports two operation modes:
+- **Standard API** — 179 curated endpoints spanning images, video, audio, 3D, and text
+- **AI Applications** — run any custom ComfyUI workflow hosted on RunningHub
 
-在 OpenClaw 对话中发送：
+---
 
-> 从 https://github.com/HM-RunningHub/OpenClaw_RH_Skills 安装 RunningHub 技能
+## Capabilities
 
-助手会自动克隆仓库、复制文件到工作区，并引导你完成 API Key 配置。
+| Category | Endpoints | Tasks |
+|----------|-----------|-------|
+| **Image** | 44 | text-to-image, image-to-image, image upscale, Midjourney-style |
+| **Video** | 101 | text-to-video, image-to-video, start+end frames, video extend/edit, motion control |
+| **Audio** | 8 | text-to-speech, music generation, voice cloning |
+| **3D** | 12 | text-to-3D, image-to-3D, multi-image-to-3D |
+| **Text** | 14 | image understanding, video understanding, text processing |
+| **AI Apps** | Unlimited | Run any RunningHub AI Application (custom ComfyUI workflow) |
 
-### 更新
+---
 
-当技能有新版本时，在 OpenClaw 对话中发送：
+## Quick Start
 
-> 从 https://github.com/HM-RunningHub/OpenClaw_RH_Skills 更新 并重新读取@runninghub/SKILL.md
+### Install
 
-助手会拉取最新代码并重新加载技能配置，无需重新输入 API Key。
+In your OpenClaw chat, send:
 
-### 前置条件
+```
+Install the RunningHub skill from https://github.com/HM-RunningHub/OpenClaw_RH_Skills
+```
 
-- **API Key** — 在 [RunningHub API 管理页面](https://www.runninghub.cn/enterprise-api/sharedApi) 创建（点击"新建"）
-- **账户余额** — [前往充值](https://www.runninghub.cn/vip-rights/4)，API 调用需要余额
+The assistant will clone the repo, copy files to the workspace, and guide you through API key setup.
 
-## 使用方式
+### Update
 
-安装完成后，直接用自然语言跟助手对话即可：
+When a new version is available:
 
-- *"帮我画一只在公园里玩耍的小狗"*
-- *"把这张照片做成视频"*
-- *"给我的视频配个背景音乐"*
-- *"把这张图放大到 4K"*
-- *"把这张图转成 3D 模型"*
-- *"帮我跑这个 AI 应用 https://www.runninghub.cn/ai-detail/1877265245566922800"*
-- *"最热门的 AI 应用有哪些？"*
-- *"推荐一些最新的 AI 应用"*
+```
+Update from https://github.com/HM-RunningHub/OpenClaw_RH_Skills and re-read @runninghub/SKILL.md
+```
 
-助手会自动选择最合适的 RunningHub 端点来完成你的请求；如果是 AI 应用，则获取应用节点信息、引导你设置参数并运行；还可以浏览推荐、最热、最新的 AI 应用。
+The assistant will pull the latest code and reload the skill config. Your API key is preserved.
 
-### 视频生成交互
+### Prerequisites
 
-生成视频时，助手会展示 8 个精选模型让你选择：
+- **API Key** — Create one at [RunningHub API Management](https://www.runninghub.cn/enterprise-api/sharedApi) (click "新建")
+- **Wallet balance** — [Recharge here](https://www.runninghub.cn/vip-rights/4) — API calls consume credits
 
-> 1. 🚀 **Google Veo 3.1 Fast** — 又快效果又好，性价比之王
-> 2. 🔥 **Grok Video** — Grok 驱动，画面想象力超强
-> 3. 🎯 **Kling v3.0 Pro** — 运动自然，拍人物首选
-> 4. 🎬 **Google Veo 3.1 Pro** — 电影感拉满
-> 5. ✨ **Vidu Q3 Pro** — 风格化独特
-> 6. ⭐ **Sora** — Sora 同款引擎
-> 7. 🌊 **MiniMax Hailuo** — 速度快画面细腻
-> 8. 🌱 **Seedance v1.5 Pro** — 动作流畅细腻
+---
 
-选个数字就能开始生成，不选默认用 Google Veo 3.1 Fast。
+## Usage
 
-### 图片生成交互
+Once installed, talk to your OpenClaw assistant naturally:
 
-生成图片时，助手会展示 5 个精选模型让你选择：
+```
+Generate a picture of a dog playing in the park
+Turn this photo into a video
+Create background music for my video
+Upscale this image to 4K
+Convert this image to a 3D model
+Run this AI app: https://www.runninghub.cn/ai-detail/1877265245566922800
+What are the hottest AI apps right now?
+```
 
-> 1. 🎨 **全能图片PRO** — 香蕉Pro同款，默认推荐，综合效果最好
-> 2. ⚡ **全能图片V2** — 香蕉2同款，最快最便宜
-> 3. 🎭 **悠船 v7** — Midjourney 风格，欧美大片质感
-> 4. 🌸 **悠船 niji7** — 二次元/动漫风格，插画感满满
-> 5. 📷 **Seedream v5** — 字节跳动出品，写实照片感超强
+The assistant selects the best RunningHub endpoint automatically. For AI Apps, it fetches node info, guides parameter setup, and runs the workflow.
 
-选个数字就能开始生成，不选默认用全能图片PRO。
+### Image Model Selection
 
-## 项目结构
+When generating images, the assistant presents 5 curated models:
+
+| # | Model | Best For |
+|---|-------|----------|
+| 1 | 🎨 **RH Image PRO** | Best overall quality — recommended default |
+| 2 | ⚡ **RH Image V2** | Fastest and most affordable |
+| 3 | 🎭 **Youchuan v7** | Midjourney-style, cinematic look |
+| 4 | 🌸 **Youchuan niji7** | Anime / illustration style |
+| 5 | 📷 **Seedream v5** | ByteDance — strong photorealistic feel |
+
+Pick a number or skip to use the default (RH Image PRO).
+
+### Video Model Selection
+
+When generating video, the assistant presents 8 curated models:
+
+| # | Model | Best For |
+|---|-------|----------|
+| 1 | 🚀 **Google Veo 3.1 Fast** | Fast with great quality — best value |
+| 2 | 🔥 **Grok Video** | Grok-powered, incredible imagination |
+| 3 | 🎯 **Kling v3.0 Pro** | Natural motion, best for people |
+| 4 | 🎬 **Google Veo 3.1 Pro** | Cinematic quality |
+| 5 | ✨ **Vidu Q3 Pro** | Unique stylized look |
+| 6 | ⭐ **Sora** | Sora-class engine |
+| 7 | 🌊 **MiniMax Hailuo** | Fast with fine details |
+| 8 | 🌱 **Seedance v1.5 Pro** | Smooth motion, great for dance |
+
+Pick a number or skip to use the default (Google Veo 3.1 Fast).
+
+---
+
+## Architecture
 
 ```
 runninghub/
-├── SKILL.md                        # OpenClaw 技能定义（路由表 + 示例 + 交互规则）
+├── SKILL.md                        # OpenClaw skill definition (routing, persona, rules)
 ├── scripts/
-│   ├── runninghub.py               # 标准模型 API 客户端（179 端点）
-│   ├── runninghub_app.py           # AI 应用客户端（自定义 ComfyUI 工作流）
-│   └── build_capabilities.py       # 从 models_registry.json 生成 capabilities.json
-└── data/
-    └── capabilities.json           # 完整端点目录（自动生成）
+│   ├── runninghub.py               # Standard model API client (179 endpoints)
+│   ├── runninghub_app.py           # AI Application client (custom ComfyUI workflows)
+│   └── build_capabilities.py       # Generates capabilities.json from models_registry.json
+├── data/
+│   └── capabilities.json           # Full endpoint catalog (auto-generated)
+└── references/
+    ├── api-key-setup.md            # API key configuration guide
+    ├── output-delivery.md          # Output handling rules
+    ├── image-models.md             # Image model selection flow
+    ├── video-models.md             # Video model selection flow
+    └── ai-application.md           # AI app workflow guide
 ```
 
-## 脚本模式
+---
 
-### 标准模型 API（runninghub.py）
+## Script Reference
 
-| 模式 | 命令 | 用途 |
-|------|------|------|
-| **检查** | `--check` | 验证 API Key + 查询余额 |
-| **列表** | `--list [--type T] [--task T]` | 浏览可用端点 |
-| **详情** | `--info ENDPOINT` | 查看端点参数 |
-| **执行** | `--endpoint EP --prompt "..." -o /tmp/out` | 使用指定端点执行 |
-| **自动** | `--task TASK --prompt "..." -o /tmp/out` | 自动选择最佳端点 |
+### Standard Model API (`runninghub.py`)
 
-### AI 应用（runninghub_app.py）
+| Mode | Command | Purpose |
+|------|---------|---------|
+| **Check** | `--check` | Verify API key + check wallet balance |
+| **List** | `--list [--type T] [--task T]` | Browse available endpoints |
+| **Info** | `--info ENDPOINT` | View endpoint parameters |
+| **Execute** | `--endpoint EP --prompt "..." -o /tmp/out` | Run with a specific endpoint |
+| **Auto** | `--task TASK --prompt "..." -o /tmp/out` | Auto-select the best endpoint |
 
-| 模式 | 命令 | 用途 |
-|------|------|------|
-| **检查** | `--check` | 验证 API Key + 查询余额 |
-| **浏览** | `--list [--sort S] [--size N] [--page N]` | 浏览推荐/最热/最新 AI 应用 |
-| **节点** | `--info WEBAPP_ID` | 查看 AI 应用的可修改节点 |
-| **执行** | `--run WEBAPP_ID --node ... --file ... -o /tmp/out` | 运行 AI 应用 |
+```bash
+# Examples
+python3 scripts/runninghub.py --check
+python3 scripts/runninghub.py --list --type image
+python3 scripts/runninghub.py --info rhart-image-n-pro/text-to-image
+python3 scripts/runninghub.py --task text-to-image --prompt "a cat on Mars" -o /tmp/cat.png
+```
 
-## 更新能力目录
+### AI Application (`runninghub_app.py`)
 
-当 RunningHub 上线新的 API 端点时，重新生成目录：
+| Mode | Command | Purpose |
+|------|---------|---------|
+| **Check** | `--check` | Verify API key + check wallet balance |
+| **Browse** | `--list [--sort S] [--size N] [--page N]` | Browse recommended/hottest/newest apps |
+| **Nodes** | `--info WEBAPP_ID` | Show modifiable nodes for an AI app |
+| **Execute** | `--run WEBAPP_ID --node ... --file ... -o /tmp/out` | Run an AI application |
+
+```bash
+# Examples
+python3 scripts/runninghub_app.py --list --sort RECOMMEND --size 10
+python3 scripts/runninghub_app.py --list --sort HOTTEST --days 7
+python3 scripts/runninghub_app.py --info 1877265245566922800
+python3 scripts/runninghub_app.py --run 1877265245566922800 --node "52:prompt=a sunset" -o /tmp/out.png
+```
+
+---
+
+## Configuration
+
+### API Key Setup
+
+The API key is resolved in this order:
+
+1. `--api-key` CLI flag
+2. `RUNNINGHUB_API_KEY` environment variable
+3. `~/.openclaw/openclaw.json` → `skills.entries.runninghub.apiKey`
+
+See [`references/api-key-setup.md`](./runninghub/references/api-key-setup.md) for detailed instructions.
+
+### Updating the Capabilities Catalog
+
+When RunningHub adds new API endpoints, regenerate `capabilities.json`:
 
 ```bash
 python3 scripts/build_capabilities.py \
@@ -126,6 +193,21 @@ python3 scripts/build_capabilities.py \
   --output data/capabilities.json
 ```
 
-## 许可证
+---
 
-[Apache-2.0](./LICENSE)
+## Requirements
+
+| Requirement | Details |
+|-------------|---------|
+| Python | 3.x (standard library only — no pip installs) |
+| curl | Must be available in `PATH` |
+| RunningHub account | API key + wallet balance required |
+| OpenClaw | Required to use as a conversational skill |
+
+No third-party Python packages are required.
+
+---
+
+## License
+
+[Apache-2.0](./LICENSE) — Copyright 2026 RunningHub
